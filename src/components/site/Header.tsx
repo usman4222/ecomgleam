@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import logo from "@/assets/ecomgleam-logo.png.asset.json";
+import { Button } from "@/components/ui/button";
 
 const nav = [
   { to: "/capabilities", label: "Capabilities" },
@@ -49,12 +50,11 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            to="/contact"
-            className="hidden rounded-full bg-primary px-5 py-2.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground transition-transform hover:scale-[1.04] md:inline-flex"
-          >
-            Brand Diagnostic
-          </Link>
+          <Button asChild variant="default" size="sm" className="hidden rounded-none md:inline-flex">
+            <Link to="/contact">
+              Brand Diagnostic
+            </Link>
+          </Button>
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}

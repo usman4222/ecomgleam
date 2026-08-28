@@ -131,9 +131,9 @@ export function ThreeHero() {
       ctx.fillText("06 / TODAY", canvas.width - 35, 30);
 
       // Wrapped Title/Description
-      ctx.font = 'bold 22px Arial, sans-serif';
+      ctx.font = 'bold 35px Arial, sans-serif';
       ctx.fillStyle = '#0c0f12';
-      
+
       const maxWidth = canvas.width * 0.75;
       const titleWords = title.split(' ');
       let titleLines: string[] = [];

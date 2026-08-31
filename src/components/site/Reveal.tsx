@@ -7,12 +7,14 @@ export function Reveal({
   as: Tag = "div",
   delay = 0,
   y = 28,
+  x = 0,
   className,
 }: {
   children: ReactNode;
   as?: ElementType;
   delay?: number;
   y?: number;
+  x?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLElement | null>(null);
@@ -36,10 +38,11 @@ export function Reveal({
       ctx = gsap.context(() => {
         gsap.fromTo(
           el,
-          { opacity: 0, y },
+          { opacity: 0, y, x },
           {
             opacity: 1,
             y: 0,
+            x: 0,
             duration: 0.9,
             delay,
             ease: "power3.out",
@@ -53,7 +56,7 @@ export function Reveal({
       cancelled = true;
       ctx?.revert();
     };
-  }, [delay, y]);
+  }, [delay, y, x]);
 
   return (
     <Tag ref={ref as never} className={className} style={{ opacity: 0 }}>
@@ -61,3 +64,4 @@ export function Reveal({
     </Tag>
   );
 }
+

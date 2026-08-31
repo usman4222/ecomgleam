@@ -41,37 +41,46 @@ const stats = [
   { value: 355, label: "HAPPY CUSTOMERS", heightClass: "h-[220px] md:h-[260px]" },
 ];
 
-function RunningNumber({ value }: { value: number }) {
+function RunningNumber({ value, delay = 0, start = false }: { value: number; delay?: number; start?: boolean }) {
   const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!start) return;
 
-    let start = 0;
-    const end = value;
-    const duration = 2000;
-    const startTime = performance.now();
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      if (cancelled) return;
+      let startVal = 0;
+      const end = value;
+      const duration = 2000;
+      const startTime = performance.now();
 
-    function update(currentTime: number) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = progress * (2 - progress);
-      setCount(Math.floor(ease * (end - start) + start));
+      function update(currentTime: number) {
+        if (cancelled) return;
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = progress * (2 - progress);
+        setCount(Math.floor(ease * (end - startVal) + startVal));
 
-      if (progress < 1) {
-        requestAnimationFrame(update);
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
       }
-    }
 
-    requestAnimationFrame(update);
-  }, [isInView, value]);
+      requestAnimationFrame(update);
+    }, delay);
 
-  return <span ref={ref}>{count}</span>;
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [start, value, delay]);
+
+  return <span>{count}</span>;
 }
 
 export function WhyChooseUs() {
+  const [startAnimation, setStartAnimation] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const numRef = useRef<HTMLSpanElement>(null);
@@ -91,6 +100,7 @@ export function WhyChooseUs() {
     });
 
     let currentState = 0;
+    let animated = false;
 
     // Cycle text based on scroll progress
     const trigger = ScrollTrigger.create({
@@ -100,6 +110,13 @@ export function WhyChooseUs() {
       scrub: 0.15,
       onUpdate: (self) => {
         const p = self.progress;
+
+        // Trigger bottom graphs and counters when text cycling is near completion and user scrolls to them
+        if (p > 0.85 && !animated) {
+          animated = true;
+          setStartAnimation(true);
+        }
+
         const total = pillars.length;
         let i = Math.floor(p * total);
         if (i >= total) i = total - 1;
@@ -208,17 +225,34 @@ export function WhyChooseUs() {
               {stats.map((stat, index) => (
                 <div
                   key={index}
-                  className={`bg-zinc-950 text-white p-6 flex flex-col justify-between transition-transform duration-500 hover:bg-zinc-900 ${stat.heightClass} relative rounded-none`}
+                  className={`relative ${stat.heightClass} text-white flex flex-col justify-between overflow-hidden group rounded-none isolate`}
                 >
-                  {/* Top Left Number with running count-up animation */}
-                  <div className="font-clash font-bold text-4xl md:text-5xl text-primary tracking-tight">
-                    <RunningNumber value={stat.value} />
-                  </div>
+                  {/* Animating background bar growing from bottom to top */}
+                  <motion.div
+                    initial={{ scaleY: 0 }}
+                    animate={startAnimation ? { scaleY: 1 } : { scaleY: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.15 }}
+                    style={{ transformOrigin: "bottom" }}
+                    className="absolute inset-0 bg-zinc-950 group-hover:bg-zinc-900 transition-colors duration-300 z-0"
+                  />
 
-                  {/* Bottom Right Label */}
-                  <div className="text-right text-[0.6875rem] md:text-xs font-bold tracking-wider text-white/70 uppercase">
-                    {stat.label}
-                  </div>
+                  {/* Content Container fading in */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={startAnimation ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                    transition={{ duration: 0.5, delay: index * 0.15 + 0.3 }}
+                    className="h-full w-full p-6 flex flex-col justify-between relative z-10"
+                  >
+                    {/* Top Left Number with running count-up animation */}
+                    <div className="font-clash font-bold text-4xl md:text-5xl text-primary tracking-tight">
+                      <RunningNumber value={stat.value} delay={index * 150 + 300} start={startAnimation} />
+                    </div>
+
+                    {/* Bottom Right Label */}
+                    <div className="text-right text-[0.6875rem] md:text-xs font-bold tracking-wider text-white/70 uppercase">
+                      {stat.label}
+                    </div>
+                  </motion.div>
                 </div>
               ))}
             </div>

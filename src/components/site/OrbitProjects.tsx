@@ -24,27 +24,27 @@ interface ProjectItem {
 
 const DEFAULT_ITEMS: ProjectItem[] = [
   {
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
     label: "Commerce System Expansion",
   },
   {
-    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80",
     label: "Global Brand Strategy",
   },
   {
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
     label: "Marketplace Optimization",
   },
   {
-    image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
     label: "Omnichannel Growth",
   },
   {
-    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80",
     label: "Fulfillment Automation",
   },
   {
-    image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=800&q=80",
     label: "Customer Insights Hub",
   },
 ];
@@ -69,22 +69,6 @@ export function OrbitProjects() {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // IntersectionObserver to only animate when in viewport
-  const [isInViewport, setIsInViewport] = useState(false);
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root || typeof window === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInViewport(entry.isIntersecting);
-      },
-      { root: null, rootMargin: "100% 0px 100% 0px", threshold: 0 }
-    );
-    observer.observe(root);
-    return () => observer.disconnect();
   }, []);
 
   // Smooth scroll loop matching Framer module physics interpolation
@@ -143,7 +127,7 @@ export function OrbitProjects() {
       window.removeEventListener("scroll", updateTargetProgress);
       window.removeEventListener("resize", updateTargetProgress);
     };
-  }, [isInViewport]);
+  }, []);
 
   const isCompact = viewportWidth < 1024;
   const isMobile = viewportWidth < 640;
@@ -203,7 +187,7 @@ export function OrbitProjects() {
   const gridMaxWidth = 1160;
   const gridPositionY = 52;
 
-  const titleEnterProgress = smootherstep(0, 0.2, progress);
+  const titleEnterProgress = smootherstep(-0.05, 0.15, progress);
   const titleExitProgress = smootherstep(0.74, 0.94, progress);
   const titleOpacity = titleEnterProgress * (1 - titleExitProgress);
   const titleVerticalShift = lerp(28, 0, titleEnterProgress);
@@ -251,7 +235,7 @@ export function OrbitProjects() {
             willChange: "transform, opacity",
           }}
         >
-          <span className="font-clash font-extrabold text-[120px] lg:text-[144px] leading-[0.86] tracking-tight text-white/5 uppercase">
+          <span className="font-clash font-extrabold text-[120px] lg:text-[144px] leading-[0.86] tracking-tight text-white uppercase">
             ECOM
           </span>
         </div>
@@ -266,7 +250,7 @@ export function OrbitProjects() {
             willChange: "transform, opacity",
           }}
         >
-          <span className="font-clash font-extrabold text-[120px] lg:text-[144px] leading-[0.86] tracking-tight text-white/5 uppercase">
+          <span className="font-clash font-extrabold text-[120px] lg:text-[144px] leading-[0.86] tracking-tight text-white uppercase">
             PROJECTS
           </span>
         </div>

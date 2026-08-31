@@ -79,7 +79,7 @@ export function AboutSection() {
             {/* List of items */}
             <div className="space-y-10 md:mt-16">
               {items.map((item, idx) => (
-                <Reveal key={idx} delay={0.15 + idx * 0.05}>
+                <Reveal key={idx} delay={0.15 + idx * 0.05} y={0} x={50}>
                   <div className="group flex items-start gap-4">
                     {/* List Bullet Point */}
                     <span className="text-xl text-primary font-bold leading-none mt-1">•</span>

@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/ecomgleam-logo.png.asset.json";
 
 const columns = [
   {
@@ -42,7 +41,7 @@ export function Footer() {
 
         <div className="mt-14 grid gap-10 md:grid-cols-4">
           <div>
-            <img src={logo.url} alt="Ecom Gleam" className="h-8 w-auto" />
+            <img src="/assets/images/logo.png" alt="Ecom Gleam" className="h-8 w-auto" />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted-foreground">
               An integrated Brand Growth, Commerce & Market Expansion firm operating across the
               United States, United Kingdom and United Arab Emirates.

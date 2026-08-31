@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import logo from "@/assets/ecomgleam-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 
 const nav = [
@@ -27,13 +26,12 @@ export function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
-        solid ? "bg-background/85 backdrop-blur-xl border-b border-border" : "bg-transparent"
-      }`}
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${solid ? "bg-background/85 backdrop-blur-xl border-b border-border" : "bg-transparent"
+        }`}
     >
       <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between gap-8 px-5 md:px-10">
         <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
-          <img src={logo.url} alt="Ecom Gleam" className="h-8 w-auto md:h-9" />
+          <img src="/assets/images/logo.png" alt="Ecom Gleam" className="h-8 w-auto md:h-9" />
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">

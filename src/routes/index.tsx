@@ -11,6 +11,8 @@ import { MissionSection } from "@/components/site/MissionSection";
 import { ServicesSection } from "@/components/site/ServicesSection";
 import { WhyChooseUs } from "@/components/site/WhyChooseUs";
 import { OrbitProjects } from "@/components/site/OrbitProjects";
+import { HowWeOperate } from "@/components/site/HowWeOperate";
+import { PressRecognition } from "@/components/site/PressRecognition";
 import { Button } from "@/components/ui/button";
 
 
@@ -143,6 +145,8 @@ function Home() {
       <ServicesSection />
       <WhyChooseUs />
       <OrbitProjects />
+      <HowWeOperate />
+      <PressRecognition />
 
       {/* Pipeline marquee */}
       <section className="overflow-hidden border-y border-border bg-[var(--ink)] py-5">

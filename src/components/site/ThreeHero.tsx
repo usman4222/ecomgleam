@@ -1,10 +1,19 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export function ThreeHero() {
+interface ThreeHeroProps {
+  isLoaded?: boolean;
+}
+
+export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isHoveringRef = useRef(false);
+  const isLoadedRef = useRef(isLoaded);
+
+  useEffect(() => {
+    isLoadedRef.current = isLoaded;
+  }, [isLoaded]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -272,7 +281,7 @@ export function ThreeHero() {
     }
 
     let animationFrameId: number;
-    const startTime = Date.now();
+    let startTime: number | null = null;
     const moveDuration = 1500;
     const endScale = 1.2;
 
@@ -280,22 +289,29 @@ export function ThreeHero() {
     function animate() {
       animationFrameId = requestAnimationFrame(animate);
 
-      const elapsed = Date.now() - startTime;
-      const t = Math.min(elapsed / moveDuration, 1);
-      const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      if (isLoadedRef.current) {
+        if (startTime === null) {
+          startTime = Date.now();
+        }
+        const elapsed = Date.now() - startTime;
+        const t = Math.min(elapsed / moveDuration, 1);
+        const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-      camera.position.z = 28;
-      camera.position.y = -10;
+        camera.position.z = 28;
+        camera.position.y = -10;
 
-      const scale = endScale;
-      group.scale.set(scale, scale, scale);
+        const scale = endScale;
+        group.scale.set(scale, scale, scale);
 
-      const startY = -60;
-      const endY = -10;
-      group.position.y = THREE.MathUtils.lerp(startY, endY, ease);
+        const startY = -60;
+        const endY = -10;
+        group.position.y = THREE.MathUtils.lerp(startY, endY, ease);
 
-      group.rotation.z = 0.35;
-      group.rotation.x = Math.atan((group.position.y - camera.position.y) / camera.position.z);
+        group.rotation.z = 0.35;
+        group.rotation.x = Math.atan((group.position.y - camera.position.y) / camera.position.z);
+      } else {
+        group.position.y = -60;
+      }
 
       if (!isHoveringRef.current) {
         const currentDistance = camera.position.z;

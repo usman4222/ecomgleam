@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Reveal } from "@/components/site/Reveal";
@@ -13,6 +14,7 @@ import { WhyChooseUs } from "@/components/site/WhyChooseUs";
 import { OrbitProjects } from "@/components/site/OrbitProjects";
 import { HowWeOperate } from "@/components/site/HowWeOperate";
 import { PressRecognition } from "@/components/site/PressRecognition";
+import { Preloader } from "@/components/site/Preloader";
 import { Button } from "@/components/ui/button";
 
 
@@ -56,8 +58,11 @@ const markets = [
 ];
 
 function Home() {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   return (
     <>
+      <Preloader onComplete={() => setIsLoaded(true)} />
       {/* Hero */}
       <section className="relative flex min-h-[100svh] items-start overflow-hidden pt-12">
         <img
@@ -74,8 +79,8 @@ function Home() {
             <span className="block w-full overflow-hidden pb-[6vw]">
               <motion.span
                 initial={{ y: "-115%", opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+                animate={isLoaded ? { y: 0, opacity: 1 } : { y: "-115%", opacity: 0 }}
+                transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
                 className="flex w-full justify-between"
               >
                 {[
@@ -110,8 +115,8 @@ function Home() {
             <div className="relative z-20 text-left">
               <motion.p
                 initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: 0.4 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                transition={{ duration: 0.9, delay: 0.35 }}
                 className="text-base leading-relaxed text-muted-foreground/95 md:text-lg max-w-xl font-sans text-left"
               >
                 We research, position, build, operate, protect and scale brands across digital
@@ -123,8 +128,8 @@ function Home() {
             <div className="relative z-40 pointer-events-auto">
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.55 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
                 className="flex flex-col sm:flex-row md:flex-col gap-4 justify-end items-stretch md:items-end w-full"
               >
                 <Button asChild className="rounded-none w-full md:w-auto h-14 bg-primary text-zinc-950 border-none hover:bg-primary/90 hover:scale-[1.02] transition-all before:hidden">
@@ -137,7 +142,7 @@ function Home() {
             </div>
           </div>
         </div>
-        <ThreeHero />
+        <ThreeHero isLoaded={isLoaded} />
       </section>
 
       <AboutSection />

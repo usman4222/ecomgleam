@@ -86,9 +86,20 @@ export function WhyChooseUs() {
   const numRef = useRef<HTMLSpanElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const numbersSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef.current || !cardRef.current) return;
+
+    // ScrollTrigger to detect entering viewport to animate bottom graphs
+    const animTrigger = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top 75%",
+      once: true,
+      onEnter: () => {
+        setStartAnimation(true);
+      },
+    });
 
     // Pin the outer container while scrolling
     const pin = ScrollTrigger.create({
@@ -100,7 +111,6 @@ export function WhyChooseUs() {
     });
 
     let currentState = 0;
-    let animated = false;
 
     // Cycle text based on scroll progress
     const trigger = ScrollTrigger.create({
@@ -109,14 +119,8 @@ export function WhyChooseUs() {
       end: "+=200%",
       scrub: 0.15,
       onUpdate: (self) => {
+        setStartAnimation(true);
         const p = self.progress;
-
-        // Trigger bottom graphs and counters when text cycling is near completion and user scrolls to them
-        if (p > 0.85 && !animated) {
-          animated = true;
-          setStartAnimation(true);
-        }
-
         const total = pillars.length;
         let i = Math.floor(p * total);
         if (i >= total) i = total - 1;
@@ -159,6 +163,7 @@ export function WhyChooseUs() {
     });
 
     return () => {
+      animTrigger.kill();
       pin.kill();
       trigger.kill();
     };
@@ -215,7 +220,7 @@ export function WhyChooseUs() {
           <div className="w-full h-[1px] bg-zinc-200" />
 
           {/* Bottom Half: The Numbers Speak bar chart section */}
-          <div className="flex flex-col w-full">
+          <div ref={numbersSectionRef} className="flex flex-col w-full">
             <span className="text-[0.6875rem] font-bold tracking-[0.28em] text-primary uppercase block mb-8">
               // The Numbers Speak
             </span>

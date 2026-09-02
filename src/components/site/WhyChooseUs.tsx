@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion, useInView } from "motion/react";
-import { TextAnimate } from "@/registry/magicui/text-animate";
+import { motion } from "motion/react";
+import { ScrollRevealText } from "@/components/site/ScrollRevealText";
 
 // Register ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
@@ -41,7 +41,15 @@ const stats = [
   { value: 355, label: "HAPPY CUSTOMERS", heightClass: "h-[220px] md:h-[260px]" },
 ];
 
-function RunningNumber({ value, delay = 0, start = false }: { value: number; delay?: number; start?: boolean }) {
+function RunningNumber({
+  value,
+  delay = 0,
+  start = false,
+}: {
+  value: number;
+  delay?: number;
+  start?: boolean;
+}) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -52,7 +60,7 @@ function RunningNumber({ value, delay = 0, start = false }: { value: number; del
       if (cancelled) return;
       let startVal = 0;
       const end = value;
-      const duration = 2000;
+      const duration = 1800;
       const startTime = performance.now();
 
       function update(currentTime: number) {
@@ -80,7 +88,8 @@ function RunningNumber({ value, delay = 0, start = false }: { value: number; del
 }
 
 export function WhyChooseUs() {
-  const [startAnimation, setStartAnimation] = useState(false);
+  const [startNumbersAnimation, setStartNumbersAnimation] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const numRef = useRef<HTMLSpanElement>(null);
@@ -91,44 +100,27 @@ export function WhyChooseUs() {
   useEffect(() => {
     if (!containerRef.current || !cardRef.current) return;
 
-    // ScrollTrigger to detect entering viewport to animate bottom graphs
-    const animTrigger = ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top 75%",
-      once: true,
-      onEnter: () => {
-        setStartAnimation(true);
-      },
-    });
+    let currentState = 0;
+    let animated = false;
 
-    // Pin the outer container while scrolling
+    // Pin the white card container while scrolling through the 4 pillars
     const pin = ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
-      end: "+=200%",
+      end: "+=160%",
       pin: true,
       pinSpacing: true,
-    });
-
-    let currentState = 0;
-
-    // Cycle text based on scroll progress
-    const trigger = ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top top",
-      end: "+=200%",
       scrub: 0.15,
       onUpdate: (self) => {
-        setStartAnimation(true);
         const p = self.progress;
         const total = pillars.length;
         let i = Math.floor(p * total);
         if (i >= total) i = total - 1;
 
+        // Cycle through the 4 pillars in the top half
         if (currentState !== i) {
           currentState = i;
 
-          // Staggered slide out upwards
           gsap.to([numRef.current, titleRef.current, descRef.current], {
             opacity: 0,
             y: -25,
@@ -136,7 +128,6 @@ export function WhyChooseUs() {
             stagger: 0.02,
             ease: "power2.in",
             onComplete: () => {
-              // Update text
               const active = pillars[i];
               if (active) {
                 if (numRef.current) numRef.current.innerText = `// ${active.num} ${active.title}`;
@@ -144,7 +135,6 @@ export function WhyChooseUs() {
                 if (descRef.current) descRef.current.innerText = active.description;
               }
 
-              // Staggered slide in from bottom
               gsap.fromTo(
                 [numRef.current, titleRef.current, descRef.current],
                 { y: 25, opacity: 0 },
@@ -159,61 +149,99 @@ export function WhyChooseUs() {
             },
           });
         }
+
+        // Trigger Section 2 animation ONLY once the user finishes engaging with Section 1
+        // (i.e. reaches the 4th pillar / final phase of the scroll)
+        if (!animated && p >= 0.8) {
+          animated = true;
+          setStartNumbersAnimation(true);
+        }
+      },
+    });
+
+    // Also trigger if user scrolls down past the pin to the numbers
+    const numbersTrigger = ScrollTrigger.create({
+      trigger: numbersSectionRef.current,
+      start: "top 70%",
+      once: true,
+      onEnter: () => {
+        if (!animated) {
+          animated = true;
+          setStartNumbersAnimation(true);
+        }
       },
     });
 
     return () => {
-      animTrigger.kill();
       pin.kill();
-      trigger.kill();
+      numbersTrigger.kill();
     };
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full min-h-screen bg-black flex items-center justify-center py-16 md:py-24 overflow-hidden">
+    <div
+      ref={containerRef}
+      className="w-full min-h-screen bg-black flex items-center justify-center py-16 md:py-24 overflow-hidden"
+    >
       <div className="mx-auto max-w-[1400px] w-full px-5 md:px-10 z-20">
-
-        {/* White Rounded Container Card */}
-        <div ref={cardRef} className="bg-[oklch(0.96_0.005_200)] text-zinc-950 p-8 sm:p-12 md:p-20 shadow-2xl flex flex-col justify-between gap-16 md:gap-20">
-
+        {/* Unified White Card with NO black gap */}
+        <div
+          ref={cardRef}
+          className="bg-[oklch(0.96_0.005_200)] text-zinc-950 p-8 sm:p-12 md:p-20 shadow-2xl flex flex-col justify-between gap-16 md:gap-20"
+        >
           {/* Top Half: Why Choose Us split section */}
           <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-24 items-center w-full">
-
             {/* Left Column (Sticky Title) */}
             <div className="flex flex-col justify-center">
               <span className="text-[0.6875rem] font-bold tracking-[0.28em] text-primary uppercase block">
                 // Why Choose Ecom Gleam
               </span>
 
-              <h2 className="font-clash font-bold text-[7.5vw] leading-[1.1] lg:text-[3.2vw] tracking-normal uppercase text-zinc-950 mt-6 flex flex-col gap-1">
-                <TextAnimate animation="blurInUp" by="character" once className="whitespace-nowrap">
-                  Unlocking Growth
-                </TextAnimate>
-                <TextAnimate animation="blurInUp" by="character" once delay={0.25} className="whitespace-nowrap">
-                  Through Precision.
-                </TextAnimate>
-              </h2>
+              <div className="mt-6">
+                <ScrollRevealText
+                  text="Unlocking Growth Through Precision."
+                  preset="Blur Reveal"
+                  htmlTag="h2"
+                  colorHidden="rgba(0, 0, 0, 0.18)"
+                  colorRevealed="rgba(9, 9, 11, 1)"
+                  className="font-clash font-bold text-[7.5vw] leading-[1.1] lg:text-[3.2vw] tracking-normal uppercase text-zinc-950"
+                  trigger="Scroll"
+                  offsetStart={85}
+                  offsetEnd={35}
+                />
+              </div>
 
               <p className="mt-8 max-w-sm text-base md:text-lg text-zinc-700 leading-relaxed font-sans">
-                We build scalable solutions aligned with process innovation and forward-thinking technologies.
+                We build scalable solutions aligned with process innovation and forward-thinking
+                technologies.
               </p>
             </div>
 
             {/* Right Column (Dynamic Text Cycling scroll visual) */}
             <div className="border-l-2 border-primary/40 pl-8 py-4 flex flex-col justify-center min-h-[220px]">
-              <span ref={numRef} className="font-mono text-xs text-primary tracking-[0.28em] block uppercase mb-4">
+              <span
+                ref={numRef}
+                className="font-mono text-xs text-primary tracking-[0.28em] block uppercase mb-4"
+              >
                 // 01 AI-Centered
               </span>
 
-              <h3 ref={titleRef} className="font-clash font-bold text-2xl sm:text-3xl text-zinc-950 uppercase tracking-wide">
+              <h3
+                ref={titleRef}
+                className="font-clash font-bold text-2xl sm:text-3xl text-zinc-950 uppercase tracking-wide"
+              >
                 AI-Centered
               </h3>
 
-              <p ref={descRef} className="mt-5 text-base sm:text-lg text-zinc-700 leading-relaxed font-sans max-w-xl min-h-[80px]">
-                In all of our work, we think about how AI can provide more efficiency and personalization. This drives how we experiment to deliver process innovation and data-driven.
+              <p
+                ref={descRef}
+                className="mt-5 text-base sm:text-lg text-zinc-700 leading-relaxed font-sans max-w-xl min-h-[80px]"
+              >
+                In all of our work, we think about how AI can provide more efficiency and
+                personalization. This drives how we experiment to deliver process innovation and
+                data-driven.
               </p>
             </div>
-
           </div>
 
           {/* Divider */}
@@ -225,7 +253,7 @@ export function WhyChooseUs() {
               // The Numbers Speak
             </span>
 
-            {/* Staggered Heights Bars Layout - Base starts from bottom (items-end) and sharp corners */}
+            {/* Staggered Heights Bars Layout - Base starts from bottom (items-end) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5 items-end rounded-none">
               {stats.map((stat, index) => (
                 <div
@@ -235,7 +263,7 @@ export function WhyChooseUs() {
                   {/* Animating background bar growing from bottom to top */}
                   <motion.div
                     initial={{ scaleY: 0 }}
-                    animate={startAnimation ? { scaleY: 1 } : { scaleY: 0 }}
+                    animate={startNumbersAnimation ? { scaleY: 1 } : { scaleY: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.15 }}
                     style={{ transformOrigin: "bottom" }}
                     className="absolute inset-0 bg-zinc-950 group-hover:bg-zinc-900 transition-colors duration-300 z-0"
@@ -244,13 +272,17 @@ export function WhyChooseUs() {
                   {/* Content Container fading in */}
                   <motion.div
                     initial={{ opacity: 0, y: 15 }}
-                    animate={startAnimation ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                    animate={startNumbersAnimation ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
                     transition={{ duration: 0.5, delay: index * 0.15 + 0.3 }}
                     className="h-full w-full p-6 flex flex-col justify-between relative z-10"
                   >
                     {/* Top Left Number with running count-up animation */}
                     <div className="font-clash font-bold text-4xl md:text-5xl text-primary tracking-tight">
-                      <RunningNumber value={stat.value} delay={index * 150 + 300} start={startAnimation} />
+                      <RunningNumber
+                        value={stat.value}
+                        delay={index * 150 + 300}
+                        start={startNumbersAnimation}
+                      />
                     </div>
 
                     {/* Bottom Right Label */}
@@ -262,7 +294,6 @@ export function WhyChooseUs() {
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </div>

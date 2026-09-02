@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { TextAnimate } from "@/registry/magicui/text-animate";
+import { ScrollRevealText } from "@/components/site/ScrollRevealText";
 
 const services = [
   {
@@ -204,20 +204,19 @@ export function ServicesSection() {
                 `}</style>
               </div>
 
-              <h2 className="font-clash font-bold text-[7.5vw] leading-[1.1] lg:text-[3.2vw] tracking-normal uppercase text-foreground mt-6 flex flex-col gap-1">
-                <TextAnimate animation="blurInUp" by="character" once className="whitespace-nowrap">
-                  Providing Solutions
-                </TextAnimate>
-                <TextAnimate animation="blurInUp" by="character" once delay={0.2} className="whitespace-nowrap">
-                  and Services That
-                </TextAnimate>
-                <TextAnimate animation="blurInUp" by="character" once delay={0.4} className="whitespace-nowrap">
-                  Uplift Your Business
-                </TextAnimate>
-                <TextAnimate animation="blurInUp" by="character" once delay={0.6} className="whitespace-nowrap">
-                  and Your Customers.
-                </TextAnimate>
-              </h2>
+              <div className="mt-6">
+                <ScrollRevealText
+                  text="Providing Solutions and Services That Uplift Your Business and Your Customers."
+                  preset="Blur Reveal"
+                  htmlTag="h2"
+                  colorHidden="rgba(255, 255, 255, 0.18)"
+                  colorRevealed="rgba(255, 255, 255, 1)"
+                  className="font-clash font-bold text-[7.5vw] leading-[1.1] lg:text-[3.2vw] tracking-normal uppercase text-foreground"
+                  trigger="Scroll"
+                  offsetStart={85}
+                  offsetEnd={35}
+                />
+              </div>
 
               <p className="mt-8 max-w-lg text-base md:text-lg text-muted-foreground/90 leading-relaxed font-sans">
                 At our creative agency, imagination meets strategy. Our talented team crafts

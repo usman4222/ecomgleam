@@ -12,10 +12,13 @@ import { MissionSection } from "@/components/site/MissionSection";
 import { ServicesSection } from "@/components/site/ServicesSection";
 import { WhyChooseUs } from "@/components/site/WhyChooseUs";
 import { OrbitProjects } from "@/components/site/OrbitProjects";
+import { WorkingProcess } from "@/components/site/WorkingProcess";
 import { HowWeOperate } from "@/components/site/HowWeOperate";
 import { PressRecognition } from "@/components/site/PressRecognition";
+import { TeamSection } from "@/components/site/TeamSection";
 import { Preloader } from "@/components/site/Preloader";
 import { Button } from "@/components/ui/button";
+import { ScrollRevealText } from "@/components/site/ScrollRevealText";
 
 
 
@@ -151,7 +154,9 @@ function Home() {
       <WhyChooseUs />
       <OrbitProjects />
       <HowWeOperate />
+      <WorkingProcess />
       <PressRecognition />
+      <TeamSection />
 
       {/* Pipeline marquee */}
       <section className="overflow-hidden border-y border-border bg-[var(--ink)] py-5">
@@ -178,9 +183,19 @@ function Home() {
         <div className="mx-auto grid max-w-[1400px] gap-12 px-5 md:grid-cols-[0.9fr_1.3fr] md:px-10">
           <Reveal>
             <p className="eyebrow">The Positioning</p>
-            <h2 className="display mt-5 text-[13vw] leading-[0.82] md:text-[5.5vw]">
-              Most agencies start with a channel. We start with the business problem.
-            </h2>
+            <div className="mt-5">
+              <ScrollRevealText
+                text="Most agencies start with a channel. We start with the business problem."
+                preset="Blur Reveal"
+                htmlTag="h2"
+                colorHidden="rgba(255, 255, 255, 0.2)"
+                colorRevealed="rgba(255, 255, 255, 1)"
+                className="display text-[13vw] leading-[0.82] md:text-[5.5vw]"
+                trigger="Scroll"
+                offsetStart={85}
+                offsetEnd={35}
+              />
+            </div>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="space-y-6 text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -217,9 +232,19 @@ function Home() {
         <div className="mx-auto max-w-[1400px] px-5 md:px-10">
           <Reveal>
             <p className="eyebrow">Capabilities</p>
-            <h2 className="display mt-5 text-[14vw] leading-[0.82] md:text-[6.5vw]">
-              One Operating Model
-            </h2>
+            <div className="mt-5">
+              <ScrollRevealText
+                text="One Operating Model"
+                preset="Blur Reveal"
+                htmlTag="h2"
+                colorHidden="rgba(255, 255, 255, 0.2)"
+                colorRevealed="rgba(255, 255, 255, 1)"
+                className="display text-[14vw] leading-[0.82] md:text-[6.5vw]"
+                trigger="Scroll"
+                offsetStart={85}
+                offsetEnd={35}
+              />
+            </div>
           </Reveal>
           <div className="mt-12 border-t border-border">
             {capabilities.map((cap, i) => (
@@ -284,9 +309,19 @@ function Home() {
         <div className="mx-auto grid max-w-[1400px] gap-10 px-5 md:grid-cols-[0.8fr_1.2fr] md:px-10">
           <Reveal>
             <p className="eyebrow">Engagement Models</p>
-            <h2 className="display mt-5 text-[12vw] leading-[0.82] md:text-[4.5vw]">
-              How brands work with us
-            </h2>
+            <div className="mt-5">
+              <ScrollRevealText
+                text="How brands work with us"
+                preset="Blur Reveal"
+                htmlTag="h2"
+                colorHidden="rgba(255, 255, 255, 0.2)"
+                colorRevealed="rgba(255, 255, 255, 1)"
+                className="display text-[12vw] leading-[0.82] md:text-[4.5vw]"
+                trigger="Scroll"
+                offsetStart={85}
+                offsetEnd={35}
+              />
+            </div>
           </Reveal>
           <div className="grid gap-x-8 sm:grid-cols-2">
             {engagementModels.map((m, i) => (

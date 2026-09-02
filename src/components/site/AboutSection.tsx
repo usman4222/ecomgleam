@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/site/Reveal";
 import { Button } from "@/components/ui/button";
-import { TextAnimate } from "@/registry/magicui/text-animate";
+import { ScrollRevealText } from "@/components/site/ScrollRevealText";
 
 export function AboutSection() {
   const items = [
@@ -43,14 +43,17 @@ export function AboutSection() {
               </Reveal>
 
               <div className="mt-8 md:mt-16">
-                <h2 className="font-clash font-bold text-[8.5vw] leading-[1.1] md:text-[4.2vw] tracking-normal uppercase text-foreground flex flex-col gap-1">
-                  <TextAnimate animation="blurInUp" by="character" once className="whitespace-nowrap">
-                    Sparking Ideas,
-                  </TextAnimate>
-                  <TextAnimate animation="blurInUp" by="character" once delay={0.25} className="whitespace-nowrap">
-                    Igniting Success.
-                  </TextAnimate>
-                </h2>
+                <ScrollRevealText
+                  text="Sparking Ideas, Igniting Success."
+                  preset="Blur Reveal"
+                  htmlTag="h2"
+                  colorHidden="rgba(255, 255, 255, 0.2)"
+                  colorRevealed="rgba(255, 255, 255, 1)"
+                  className="font-clash font-bold text-[8.5vw] leading-[1.1] md:text-[4.2vw] tracking-normal uppercase text-foreground"
+                  trigger="Scroll"
+                  offsetStart={85}
+                  offsetEnd={35}
+                />
               </div>
             </div>
 

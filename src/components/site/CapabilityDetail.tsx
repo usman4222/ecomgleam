@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Reveal } from "./Reveal";
+import { ScrollRevealText } from "@/components/site/ScrollRevealText";
 import type { Capability } from "@/data/capabilities";
 
 export function CapabilityDetail({ cap }: { cap: Capability }) {
@@ -56,7 +57,17 @@ export function DiagnosticCta({
     <section className="veil py-20 md:py-28">
       <div className="mx-auto max-w-[1400px] px-5 md:px-10">
         <Reveal>
-          <h2 className="display text-[14vw] leading-[0.82] md:text-[7vw]">{title}</h2>
+          <ScrollRevealText
+            text={title}
+            preset="Blur Reveal"
+            htmlTag="h2"
+            colorHidden="rgba(255, 255, 255, 0.2)"
+            colorRevealed="rgba(255, 255, 255, 1)"
+            className="display text-[14vw] leading-[0.82] md:text-[7vw]"
+            trigger="Scroll"
+            offsetStart={85}
+            offsetEnd={35}
+          />
           <p className="mt-6 max-w-2xl text-muted-foreground">{body}</p>
           <Link
             to="/contact"

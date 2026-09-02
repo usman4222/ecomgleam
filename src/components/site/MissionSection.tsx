@@ -1,6 +1,6 @@
 import missionImg from "@/assets/our-mission.jpg";
 import { Reveal } from "@/components/site/Reveal";
-import { TextAnimate } from "@/registry/magicui/text-animate";
+import { ScrollRevealText } from "@/components/site/ScrollRevealText";
 
 export function MissionSection() {
   return (
@@ -17,11 +17,19 @@ export function MissionSection() {
 
       {/* Mission Card (Flush with bottom and right on desktop) */}
       <div className="relative z-20 bg-[oklch(0.96_0.005_200)] text-zinc-950 p-8 sm:p-12 md:p-16 w-full sm:w-[85%] md:w-[50%] lg:w-[42%]  shadow-2xl transition-all duration-300">
-        <h2 className="font-clash font-bold text-3xl sm:text-4xl md:text-5xl text-zinc-950 mb-6 tracking-tight">
-          <TextAnimate animation="blurInUp" by="character" once>
-            Our Mission
-          </TextAnimate>
-        </h2>
+        <div className="mb-6">
+          <ScrollRevealText
+            text="Our Mission"
+            preset="Blur Reveal"
+            htmlTag="h2"
+            colorHidden="rgba(0, 0, 0, 0.18)"
+            colorRevealed="rgba(9, 9, 11, 1)"
+            className="font-clash font-bold text-3xl sm:text-4xl md:text-5xl text-zinc-950 tracking-tight"
+            trigger="Scroll"
+            offsetStart={85}
+            offsetEnd={35}
+          />
+        </div>
 
         <Reveal delay={0.1} y={20}>
           <p className="text-sm sm:text-base md:text-lg text-zinc-700 leading-relaxed font-sans">

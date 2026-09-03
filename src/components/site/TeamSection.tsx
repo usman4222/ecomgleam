@@ -1,16 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
+import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { ScrollRevealText } from "@/components/site/ScrollRevealText";
 
 interface TeamMember {
   name: string;
   role: string;
   location: string;
-  bio: string;
-  specialties: string[];
   image: string;
-  stats: string;
 }
 
 const teamMembers: TeamMember[] = [
@@ -18,108 +15,138 @@ const teamMembers: TeamMember[] = [
     name: "Alexander Wright",
     role: "Managing Partner & Chief Strategist",
     location: "New York / London",
-    bio: "Pioneering evidence-based commerce architecture and international market expansion. Former advisor to Fortune 500 direct-to-consumer conglomerates.",
-    specialties: ["Market Intelligence", "Brand Architecture", "Enterprise Capital"],
     image: "/assets/images/team/alexander.jpg",
-    stats: "12+ Yrs Experience • $400M+ Scale",
   },
   {
     name: "Elena Rostova",
     role: "VP of Creative Engineering",
     location: "London",
-    bio: "Spearheading luxury visual systems, motion choreography, and high-conversion brand storytelling. Translates complex offerings into visceral consumer experiences.",
-    specialties: ["Creative Direction", "Motion Systems", "High-Converting UI"],
     image: "/assets/images/team/elena.jpg",
-    stats: "Cannes Lions & Webby Honoree",
   },
   {
     name: "Marcus Vance",
     role: "Head of Commerce & Operations",
     location: "New York",
-    bio: "Architecting algorithmic revenue engines, omnichannel inventory automation, and multi-region fulfillment infrastructure.",
-    specialties: ["Omnichannel Ops", "Algorithmic Pricing", "Channel Governance"],
     image: "/assets/images/team/marcus.jpg",
-    stats: "150+ Enterprise Deployments",
   },
   {
     name: "Sophia Chen",
     role: "Director of Research & Intelligence",
     location: "Dubai / Singapore",
-    bio: "Unlocking proprietary category moats, consumer search intent analysis, and competitive channel arbitrage before capital allocation.",
-    specialties: ["Consumer Data", "Search Intent", "Competitive Auditing"],
     image: "/assets/images/team/sophia.jpg",
-    stats: "500+ Brand Audits Executed",
   },
   {
     name: "David Sterling",
     role: "Principal Brand Architect",
     location: "Chicago / New York",
-    bio: "Connecting consumer psychology with category-dominant narrative framing. Leading positioning strategies that withstand marketplace commoditization.",
-    specialties: ["Narrative Framing", "Market Positioning", "Category Design"],
     image: "/assets/images/team/david.jpg",
-    stats: "20+ Yrs Brand Governance",
   },
   {
     name: "Aria Thorne",
     role: "Head of Global Expansion",
     location: "London / Dubai",
-    bio: "Guiding brands into high-margin international jurisdictions across Europe, the Gulf Cooperation Council (GCC), and North America.",
-    specialties: ["Cross-Border DTC", "GCC & EMEA Scale", "Regulatory Setup"],
     image: "/assets/images/team/aria.jpg",
-    stats: "14 Countries Operationalized",
   },
 ];
 
-export function TeamSection() {
-  const [active, setActive] = useState(0);
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const isDragging = useRef(false);
-  const total = teamMembers.length;
+interface TeamSectionProps {
+  overlayText?: string;
+}
 
-  // Responsive carousel dimensions
-  const cardWidth = 340;
-  const cardHeight = 470;
-  const spacing = 260;
-  const rotationDeg = 24;
-  const scaleStep = 0.12;
-  const perspective = 1400;
+export function TeamSection({ overlayText = "OUR TEAM" }: TeamSectionProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [maxScroll, setMaxScroll] = useState(1600);
+  const [activeIdx, setActiveIdx] = useState(0);
 
-  // Navigation
-  const goTo = (i: number) => {
-    const next = ((i % total) + total) % total;
-    setActive(next);
+  // Measure exact horizontal distance needed
+  const updateScrollBounds = () => {
+    if (!trackRef.current) return;
+    const trackWidth = trackRef.current.scrollWidth;
+    const viewportWidth = window.innerWidth;
+    const distance = Math.max(0, trackWidth - viewportWidth + 80);
+    setMaxScroll(distance);
   };
 
-  // Autoplay (pauses on card hover or drag)
   useEffect(() => {
-    if (isPaused || isDragging.current) return;
-    const timer = setTimeout(() => {
-      goTo(active + 1);
-    }, 3800);
-    return () => clearTimeout(timer);
-  }, [active, isPaused]);
+    updateScrollBounds();
+    window.addEventListener("resize", updateScrollBounds);
+    return () => window.removeEventListener("resize", updateScrollBounds);
+  }, []);
+
+  // Framer Motion Scroll Progression
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Smooth spring physics for fluid card gliding
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 24,
+    mass: 0.6,
+  });
+
+  // Transform progress into horizontal translation
+  const x = useTransform(smoothProgress, [0, 1], [0, -maxScroll]);
+
+  // Update active index based on scroll position
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (v) => {
+      const idx = Math.min(
+        teamMembers.length - 1,
+        Math.max(0, Math.round(v * (teamMembers.length - 1)))
+      );
+      setActiveIdx(idx);
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
+
+  // Scroll to a specific card smoothly
+  const scrollToCard = (index: number) => {
+    if (!containerRef.current) return;
+    const target = Math.max(0, Math.min(teamMembers.length - 1, index));
+    const containerTop = containerRef.current.offsetTop;
+    const scrollableDistance = containerRef.current.offsetHeight - window.innerHeight;
+    const targetScroll = containerTop + (target / (teamMembers.length - 1)) * scrollableDistance;
+
+    window.scrollTo({
+      top: targetScroll,
+      behavior: "smooth",
+    });
+  };
 
   return (
-    <section className="relative w-full bg-black text-white border-b border-zinc-800 py-24 md:py-32 overflow-hidden select-none">
-      {/* Background Subtle Ambience */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(163,230,53,0.035),transparent_70%)] pointer-events-none" />
+    <section
+      ref={containerRef}
+      id="team-section"
+      className="relative w-full bg-black text-white"
+      style={{
+        height: "175vh", // Tight, responsive scroll runway leading cleanly into footer
+        isolation: "isolate", // Confine mix-blend-mode difference to this section
+      }}
+    >
+      {/* Sticky Fullscreen Stage */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between pt-6 sm:pt-8 md:pt-10 pb-12 sm:pb-16 md:pb-20 bg-black select-none">
+        {/* Subtle Ambient Radial Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(163,230,53,0.025),transparent_75%)] pointer-events-none" />
 
-      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 md:px-10 relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-10 mb-14 md:mb-20">
+        {/* Section Header Controls & Eyebrow */}
+        <div className="relative z-30 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-10 flex items-end justify-between gap-6 shrink-0">
           <div>
-            <span className="font-mono text-xs tracking-[0.28em] text-primary uppercase block mb-3">
-              // Leadership & Core Team
-            </span>
-            <div className="max-w-3xl">
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="font-mono text-xs tracking-[0.28em] text-primary uppercase">
+                // Leadership & Specialists
+              </span>
+            </div>
+            <div className="max-w-2xl">
               <ScrollRevealText
                 text="The Strategic Minds Behind Ecom Gleam."
                 preset="Blur Reveal"
                 htmlTag="h2"
-                colorHidden="rgba(255, 255, 255, 0.2)"
+                colorHidden="rgba(255, 255, 255, 0.25)"
                 colorRevealed="rgba(255, 255, 255, 1)"
-                className="font-clash font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase tracking-tight leading-[1.05]"
+                className="font-clash font-bold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight leading-tight"
                 trigger="Scroll"
                 offsetStart={85}
                 offsetEnd={35}
@@ -127,224 +154,122 @@ export function TeamSection() {
             </div>
           </div>
 
-          {/* Navigation Buttons & Progress */}
-          <div className="flex items-center gap-4 shrink-0">
-            <span className="font-mono text-xs text-zinc-500 uppercase tracking-widest mr-2">
-              {String(active + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-            </span>
+          {/* Nav Controls & Counter */}
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Active Counter */}
+            <div className="hidden sm:flex items-center font-mono text-xs text-zinc-400 tracking-widest mr-2 bg-zinc-950/80 px-3 py-1.5 border border-zinc-800/80 rounded-full">
+              <span className="text-white font-bold">{String(activeIdx + 1).padStart(2, "0")}</span>
+              <span className="mx-1 text-zinc-600">/</span>
+              <span>{String(teamMembers.length).padStart(2, "0")}</span>
+            </div>
 
+            {/* Prev Button */}
             <button
-              onClick={() => goTo(active - 1)}
-              className="w-11 h-11 border border-zinc-800 bg-[#08080a] flex items-center justify-center text-zinc-400 hover:text-white hover:border-primary transition-all rounded-none"
-              aria-label="Previous team member"
+              onClick={() => scrollToCard(activeIdx - 1)}
+              disabled={activeIdx === 0}
+              className="w-11 h-11 rounded-full border border-zinc-800 bg-zinc-950/80 flex items-center justify-center text-zinc-400 hover:text-white hover:border-primary disabled:opacity-30 disabled:pointer-events-none transition-all"
+              aria-label="Previous card"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
 
+            {/* Next Button */}
             <button
-              onClick={() => goTo(active + 1)}
-              className="w-11 h-11 border border-zinc-800 bg-[#08080a] flex items-center justify-center text-zinc-400 hover:text-white hover:border-primary transition-all rounded-none"
-              aria-label="Next team member"
+              onClick={() => scrollToCard(activeIdx + 1)}
+              disabled={activeIdx === teamMembers.length - 1}
+              className="w-11 h-11 rounded-full border border-zinc-800 bg-zinc-950/80 flex items-center justify-center text-zinc-400 hover:text-white hover:border-primary disabled:opacity-30 disabled:pointer-events-none transition-all"
+              aria-label="Next card"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* 3D Coverflow Viewport */}
-        <div
-          className="relative w-full flex items-center justify-center py-6"
-          style={{
-            perspective: `${perspective}px`,
-            perspectiveOrigin: "center center",
-            minHeight: `${cardHeight + 90}px`,
-          }}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => {
-            setIsPaused(false);
-            setHoveredIdx(null);
-          }}
-        >
-          {/* Drag Surface */}
+        {/* Central Viewport with Scrolling Cards and Difference Blend Text */}
+        <div className="relative w-full h-[460px] sm:h-[495px] md:h-[520px] flex items-center my-auto overflow-visible">
+          {/* Horizontally Moving Cards Track */}
           <motion.div
-            className="w-full h-full flex items-center justify-center relative cursor-grab active:cursor-grabbing"
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.15}
-            onDragStart={() => {
-              isDragging.current = true;
-            }}
-            onDragEnd={(_, info) => {
-              isDragging.current = false;
-              const threshold = spacing / 3.5;
-              if (info.offset.x < -threshold) goTo(active + 1);
-              else if (info.offset.x > threshold) goTo(active - 1);
+            ref={trackRef}
+            style={{ x }}
+            className="flex items-center gap-6 sm:gap-8 md:gap-10 pl-[6vw] md:pl-[10vw] pr-[20vw] shrink-0 cursor-grab active:cursor-grabbing"
+          >
+            {teamMembers.map((member, i) => {
+              const isCurrent = i === activeIdx;
+
+              return (
+                <motion.div
+                  key={member.name}
+                  onClick={() => scrollToCard(i)}
+                  whileHover={{ y: -6, scale: 1.01 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className={`relative group shrink-0 w-[280px] sm:w-[315px] md:w-[340px] h-[440px] sm:h-[475px] md:h-[500px] rounded-[28px] sm:rounded-[34px] bg-white text-zinc-950 p-5 sm:p-6 flex flex-col justify-between shadow-2xl transition-all duration-300 border ${isCurrent
+                    ? "border-primary/50 shadow-[0_20px_60px_-15px_rgba(255,255,255,0.15)]"
+                    : "border-zinc-200/90 shadow-black/40"
+                    }`}
+                >
+                  {/* Top: Colorful Portrait Photo with increased height (Protected on z-30 layer) */}
+                  <div className="relative z-30 w-full h-[160px] sm:h-[180px] md:h-[195px] rounded-[20px] sm:rounded-[22px] overflow-hidden bg-zinc-100 border border-zinc-200/80 shadow-sm shrink-0">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                    <div className="absolute top-2.5 right-2.5 bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-mono text-white/90 uppercase tracking-wider select-none">
+                      {member.location.split("/")[0].trim()}
+                    </div>
+                  </div>
+
+                  {/* Middle: Clean White Canvas for Giant Inverted Difference Text */}
+                  <div className="flex-1 w-full min-h-[150px] sm:min-h-[170px] md:min-h-[185px] pointer-events-none select-none" />
+
+                  {/* Bottom: Team Member Name & Role (Closer to OUR TEAM, reduced gap, protected on z-30 layer) */}
+                  <div className="relative z-30 pt-2.5 border-t border-zinc-100 bg-white shrink-0">
+                    <h3 className="font-clash font-bold text-lg sm:text-xl md:text-[1.45rem] text-black uppercase tracking-tight leading-tight">
+                      {member.name}
+                    </h3>
+                    <p className="font-mono text-xs sm:text-[11px] text-zinc-500 uppercase tracking-wider mt-1 font-medium">
+                      {member.role}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* Massive Inverted Typography (Difference Blend Overlay) */}
+          {/* Positioned at top-[61%] to reduce space between text and bottom role while keeping safe buffer from image */}
+          <div
+            className="absolute inset-x-0 top-[61%] -translate-y-1/2 pointer-events-none select-none z-20 flex items-center justify-center overflow-hidden w-full px-2 sm:px-4"
+            style={{
+              mixBlendMode: "difference",
             }}
           >
-            <div
-              className="relative w-full h-full flex items-center justify-center"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {teamMembers.map((member, i) => {
-                const offset = i - active;
-                const abs = Math.abs(offset);
-                const x = offset * spacing;
-                const rotY = -offset * rotationDeg;
-                const scale = Math.max(0.55, 1 - abs * scaleStep);
-                const opacity = abs > 3 ? 0 : 1 - abs * 0.16;
-                const z = -abs * 85;
-                const isCurrent = i === active;
-                const isHovered = hoveredIdx === i;
-
-                return (
-                  <motion.div
-                    key={member.name}
-                    onClick={() => {
-                      if (!isDragging.current) goTo(i);
-                    }}
-                    onMouseEnter={() => setHoveredIdx(i)}
-                    onMouseLeave={() => setHoveredIdx(null)}
-                    animate={{
-                      x,
-                      rotateY: rotY,
-                      scale,
-                      opacity,
-                      z,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 140,
-                      damping: 22,
-                      mass: 0.8,
-                    }}
-                    style={{
-                      position: "absolute",
-                      width: `${cardWidth}px`,
-                      height: `${cardHeight}px`,
-                      transformStyle: "preserve-3d",
-                      zIndex: 100 - abs,
-                      cursor: isCurrent ? "grab" : "pointer",
-                      pointerEvents: abs > 3 ? "none" : "auto",
-                    }}
-                    className="relative group rounded-none"
-                  >
-                    {/* Square Architectural Card Container */}
-                    <div className="relative w-full h-full border border-zinc-800 bg-[#0a0a0d] overflow-hidden rounded-none shadow-2xl transition-colors duration-300 group-hover:border-primary/60">
-                      {/* Corner Architectural Crosshairs */}
-                      <span className="absolute top-2 left-2 font-mono text-xs text-zinc-600 select-none z-30 pointer-events-none">
-                        +
-                      </span>
-                      <span className="absolute top-2 right-2 font-mono text-xs text-zinc-600 select-none z-30 pointer-events-none">
-                        +
-                      </span>
-                      <span className="absolute bottom-2 left-2 font-mono text-xs text-zinc-600 select-none z-30 pointer-events-none">
-                        +
-                      </span>
-                      <span className="absolute bottom-2 right-2 font-mono text-xs text-zinc-600 select-none z-30 pointer-events-none">
-                        +
-                      </span>
-
-                      {/* Member Portrait Image */}
-                      <div className="relative w-full h-full overflow-hidden">
-                        <img
-                          src={member.image}
-                          alt={member.name}
-                          className="w-full h-full object-cover object-top filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700 ease-out"
-                        />
-                        {/* Gradient shade */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
-                      </div>
-
-                      {/* Default Bottom Information Bar */}
-                      <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col justify-end z-20">
-                        <span className="font-mono text-[10px] tracking-[0.2em] text-primary uppercase block mb-1">
-                          {member.role}
-                        </span>
-                        <h3 className="font-clash font-bold text-xl text-white uppercase tracking-wide flex items-center justify-between">
-                          <span>{member.name}</span>
-                          <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-primary transition-colors" />
-                        </h3>
-                      </div>
-
-                      {/* Hover Overlay: Detailed Biography & Specialties */}
-                      <AnimatePresence>
-                        {isHovered && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 18 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 12 }}
-                            transition={{ duration: 0.25, ease: "easeOut" }}
-                            className="absolute inset-0 bg-black/95 backdrop-blur-md p-6 flex flex-col justify-between z-40 border border-primary/40 rounded-none overflow-hidden"
-                          >
-                            {/* Top Info */}
-                            <div>
-                              <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
-                                <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest">
-                                  {member.location}
-                                </span>
-                                <span className="font-mono text-[10px] text-primary font-bold tracking-widest uppercase">
-                                  CORE TEAM
-                                </span>
-                              </div>
-
-                              <h4 className="font-clash font-bold text-2xl text-white uppercase tracking-wide leading-none mb-1.5">
-                                {member.name}
-                              </h4>
-                              <p className="font-mono text-xs text-primary font-medium tracking-wider uppercase mb-4">
-                                {member.role}
-                              </p>
-
-                              <p className="font-sans text-xs sm:text-[0.8125rem] text-zinc-300 leading-relaxed">
-                                {member.bio}
-                              </p>
-                            </div>
-
-                            {/* Bottom Specialties & Stats */}
-                            <div className="pt-4 border-t border-zinc-800/90">
-                              <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider block mb-2">
-                                Core Capabilities
-                              </span>
-                              <div className="flex flex-wrap gap-1.5 mb-3">
-                                {member.specialties.map((spec, sIdx) => (
-                                  <span
-                                    key={sIdx}
-                                    className="bg-white/5 border border-white/10 text-zinc-300 font-mono text-[9px] uppercase px-2 py-0.5 rounded-none"
-                                  >
-                                    {spec}
-                                  </span>
-                                ))}
-                              </div>
-
-                              <div className="font-mono text-[10px] text-primary/90 font-semibold tracking-wide">
-                                ❖ {member.stats}
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
+            <h1 className="font-clash font-black text-white text-[clamp(5.25rem,13.5vw,13.5rem)] leading-[0.88] tracking-[0.06em] sm:tracking-[0.1em] md:tracking-[0.14em] uppercase whitespace-nowrap text-center drop-shadow-none scale-y-105">
+              {overlayText}
+            </h1>
+          </div>
         </div>
 
-        {/* Bottom Pagination Dots (Square Formatted) */}
-        <div className="flex justify-center items-center gap-2 mt-8">
-          {teamMembers.map((_, i) => {
-            const isActive = i === active;
-            return (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                className={`h-1.5 transition-all duration-300 rounded-none border-none outline-none ${
-                  isActive ? "w-8 bg-primary" : "w-2 bg-zinc-700 hover:bg-zinc-500"
-                }`}
-                aria-label={`Go to team member ${i + 1}`}
-              />
-            );
-          })}
+        {/* Bottom Section Progress Bar & Drag Instruction with generous breathing room */}
+        <div className="relative z-30 mx-auto w-full max-w-[1440px] px-5 sm:px-8 md:px-10 flex items-center justify-between gap-6 shrink-0 pt-6 sm:pt-8 md:pt-10 mb-2">
+          {/* Progress Track Line */}
+          <div className="flex-1 max-w-md h-[2px] bg-zinc-800 rounded-full overflow-hidden relative">
+            <motion.div
+              style={{
+                scaleX: smoothProgress,
+                transformOrigin: "left",
+              }}
+              className="h-full w-full bg-primary"
+            />
+          </div>
+
+          <div className="flex items-center gap-4 text-zinc-500 font-mono text-[11px] tracking-widest uppercase">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-zinc-400">
+              <Sparkles className="w-3 h-3 text-primary" /> Scroll or drag to explore
+            </span>
+            <span className="text-zinc-600">•</span>
+            <span>{teamMembers[activeIdx]?.location}</span>
+          </div>
         </div>
       </div>
     </section>

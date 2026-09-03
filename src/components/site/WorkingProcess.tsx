@@ -206,7 +206,7 @@ export function WorkingProcess() {
       <div
         ref={wrapRef}
         className="timeline relative w-full bg-black px-4 sm:px-6 md:px-8"
-        style={{ height: `${steps.length * 115}vh` }}
+        style={{ height: `${steps.length * 85}vh` }}
       >
         {/* Sticky square architectural frame */}
         <div

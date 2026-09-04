@@ -30,8 +30,8 @@ export function AboutSection() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-5 md:px-10 relative z-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 md:px-10 relative z-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
 
           {/* Left Column */}
           <div className="flex flex-col justify-between">
@@ -42,7 +42,7 @@ export function AboutSection() {
                 </span>
               </Reveal>
 
-              <div className="mt-8 md:mt-16">
+              <div className="mt-6 md:mt-16">
                 <ScrollRevealText
                   text="Sparking Ideas, Igniting Success."
                   preset="Blur Reveal"
@@ -57,7 +57,7 @@ export function AboutSection() {
               </div>
             </div>
 
-            <div className="mt-10 md:mt-16">
+            <div className="mt-8 md:mt-16">
               <Reveal delay={0.1}>
                 <p className="max-w-xl text-base md:text-lg leading-relaxed text-muted-foreground">
                   Hey! Look at me! You like getting attention? Us too. With 20+ years in the
@@ -69,9 +69,9 @@ export function AboutSection() {
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col justify-between relative pt-8 md:pt-0">
+          <div className="flex flex-col justify-between relative pt-4 md:pt-0">
             {/* Top Right Label */}
-            <div className="md:absolute top-0 right-0 text-right mb-8 md:mb-0">
+            <div className="md:absolute top-0 right-0 text-right mb-6 md:mb-0">
               <Reveal>
                 <span className="text-[0.6875rem] font-bold tracking-[0.28em] text-muted-foreground uppercase">
                   Since 2015
@@ -80,9 +80,9 @@ export function AboutSection() {
             </div>
 
             {/* List of items */}
-            <div className="space-y-10 md:mt-16">
+            <div className="space-y-8 md:space-y-10 md:mt-16">
               {items.map((item, idx) => (
-                <Reveal key={idx} delay={0.15 + idx * 0.05} y={0} x={50}>
+                <Reveal key={idx} delay={0.15 + idx * 0.05} y={15} x={0}>
                   <div className="group flex items-start gap-4">
                     {/* List Bullet Point */}
                     <span className="text-xl text-primary font-bold leading-none mt-1">•</span>

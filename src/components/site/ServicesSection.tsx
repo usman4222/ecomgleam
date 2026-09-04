@@ -248,24 +248,24 @@ export function ServicesSection() {
                   {/* Row Header */}
                   <div
                     onClick={() => setActiveIdx(idx)}
-                    className="flex items-center justify-between cursor-pointer group"
+                    className="flex items-center justify-between cursor-pointer group gap-2"
                   >
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-3 sm:gap-6 min-w-0">
                       {/* Icon Circle */}
-                      <div className={`w-14 h-14 border border-border/60 flex items-center justify-center transition-all duration-300 ${isActive ? "bg-primary border-primary text-primary-foreground" : "bg-surface/20 group-hover:bg-surface/60 group-hover:border-primary/40 text-foreground"
+                      <div className={`w-11 h-11 sm:w-14 sm:h-14 shrink-0 border border-border/60 flex items-center justify-center transition-all duration-300 ${isActive ? "bg-primary border-primary text-primary-foreground" : "bg-surface/20 group-hover:bg-surface/60 group-hover:border-primary/40 text-foreground"
                         }`}>
                         {item.icon}
                       </div>
 
                       {/* Title */}
-                      <h3 className={`font-clash font-bold text-2xl sm:text-3xl uppercase tracking-wide transition-colors duration-300 ${isActive ? "text-primary" : "text-foreground group-hover:text-primary/70"
+                      <h3 className={`font-clash font-bold text-xl sm:text-2xl md:text-3xl uppercase tracking-wide transition-colors duration-300 truncate sm:overflow-visible ${isActive ? "text-primary" : "text-foreground group-hover:text-primary/70"
                         }`}>
                         {item.title}
                       </h3>
                     </div>
 
                     {/* Service Number */}
-                    <span className="font-mono text-xs sm:text-sm text-muted-foreground/60">
+                    <span className="font-mono text-xs sm:text-sm text-muted-foreground/60 shrink-0">
                       {item.num}
                     </span>
                   </div>
@@ -275,17 +275,17 @@ export function ServicesSection() {
                     {isActive && (
                       <motion.div
                         initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                        animate={{ height: "auto", opacity: 1, marginTop: 24 }}
+                        animate={{ height: "auto", opacity: 1, marginTop: 18 }}
                         exit={{ height: 0, opacity: 0, marginTop: 0 }}
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden pl-20"
+                        className="overflow-hidden pl-0 sm:pl-16 md:pl-20"
                       >
-                        <p className="text-base md:text-lg text-muted-foreground/90 max-w-xl leading-relaxed font-sans">
+                        <p className="text-sm sm:text-base md:text-lg text-muted-foreground/90 max-w-xl leading-relaxed font-sans">
                           {item.description}
                         </p>
 
                         {/* Sub-services Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 mt-8 max-w-xl text-[0.82rem] sm:text-sm tracking-[0.16em] uppercase font-clash text-foreground/85">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 sm:gap-y-4 gap-x-8 mt-6 sm:mt-8 max-w-xl text-xs sm:text-sm tracking-[0.16em] uppercase font-clash text-foreground/85">
                           {item.subServices.map((sub, i) => (
                             <div key={i} className="transition-colors duration-300 hover:text-primary">
                               {sub}
@@ -294,7 +294,7 @@ export function ServicesSection() {
                         </div>
 
                         {/* See Work Button */}
-                        <div className="mt-8">
+                        <div className="mt-6 sm:mt-8">
                           <Button asChild size="sm">
                             <Link to="/case-studies">
                               <span>See Work</span>

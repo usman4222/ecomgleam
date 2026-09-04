@@ -161,7 +161,7 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
       let lineY = 60;
       for (const line of titleLines) {
         ctx.fillText(line, canvas.width - 35, lineY);
-        lineY += 28;
+        lineY += 36;
       }
 
       // Bottom-Left Big Card Index Number (01, 02, etc.)
@@ -185,9 +185,10 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
       const texture = createCardTexture(card.title, card.label, i);
       textures.push(texture);
 
+      const isMobileInit = window.innerWidth < 768;
       const material = new THREE.MeshBasicMaterial({
         map: texture,
-        side: THREE.DoubleSide,
+        side: isMobileInit ? THREE.FrontSide : THREE.DoubleSide,
         transparent: true,
       });
       materials.push(material);
@@ -207,7 +208,7 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
         angle: angle,
         index: i,
         originalX: plane.position.x,
-        originalZ: plane.position.z
+        originalZ: plane.position.z,
       };
 
       spinGroup.add(plane);
@@ -265,8 +266,46 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
       });
     }
 
+    function onTouchMove(event: TouchEvent) {
+      if (event.touches.length === 0) return;
+      const touch = event.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(planes);
+
+      if (intersects.length > 0) {
+        isHoveringRef.current = true;
+        planes.forEach(plane => {
+          if (plane.material instanceof THREE.MeshBasicMaterial) {
+            if (plane === intersects[0].object) {
+              plane.material.opacity = 1;
+              plane.scale.set(1.08, 1.08, 1.08);
+            } else {
+              plane.material.opacity = 0.4;
+              plane.scale.set(1, 1, 1);
+            }
+          }
+        });
+      }
+    }
+
+    function onTouchEnd() {
+      isHoveringRef.current = false;
+      planes.forEach(plane => {
+        if (plane.material instanceof THREE.MeshBasicMaterial) {
+          plane.material.opacity = 1;
+          plane.scale.set(1, 1, 1);
+        }
+      });
+    }
+
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseleave', onMouseLeave);
+    canvas.addEventListener('touchmove', onTouchMove, { passive: true });
+    canvas.addEventListener('touchend', onTouchEnd, { passive: true });
 
     // === Animation Speed Setup ===
     const minSpeed = 0.00010;
@@ -289,6 +328,19 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
     function animate() {
       animationFrameId = requestAnimationFrame(animate);
 
+      const width = window.innerWidth;
+      const isSmallMobile = width < 480;
+      const isMobile = width < 768;
+
+      // Ensure card materials dynamically match the current viewport mode
+      const desiredSide = isMobile ? THREE.FrontSide : THREE.DoubleSide;
+      if (materials.length > 0 && materials[0].side !== desiredSide) {
+        materials.forEach(mat => {
+          mat.side = desiredSide;
+          mat.needsUpdate = true;
+        });
+      }
+
       if (isLoadedRef.current) {
         if (startTime === null) {
           startTime = Date.now();
@@ -297,18 +349,40 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
         const t = Math.min(elapsed / moveDuration, 1);
         const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-        camera.position.z = 28;
-        camera.position.y = -10;
+        if (isMobile) {
+          // --- MOBILE ONLY: Centered cleanly between description text and CTA buttons ---
+          const targetCameraZ = isSmallMobile ? 26 : 26;
+          const targetEndY = isSmallMobile ? -13.2 : -12.8; // Centered under text and above buttons
+          const targetScale = isSmallMobile ? 0.82 : 0.88;
 
-        const scale = endScale;
-        group.scale.set(scale, scale, scale);
+          camera.position.z = targetCameraZ;
+          camera.position.y = -10;
 
-        const startY = -60;
-        const endY = -10;
-        group.position.y = THREE.MathUtils.lerp(startY, endY, ease);
+          group.scale.set(targetScale, targetScale, targetScale);
 
-        group.rotation.z = 0.35;
-        group.rotation.x = Math.atan((group.position.y - camera.position.y) / camera.position.z);
+          const startY = -60;
+          const endY = targetEndY;
+          group.position.y = THREE.MathUtils.lerp(startY, endY, ease);
+
+          group.rotation.z = 0.12; // Sleek subtle slant
+          const startTiltX = -0.3;
+          const baseTiltX = -0.04; // Eye-level view so cards show in front
+          group.rotation.x = THREE.MathUtils.lerp(startTiltX, baseTiltX, ease);
+        } else {
+          // --- DESKTOP VIEW: Exactly as it was originally before mobile changes ---
+          camera.position.z = 28;
+          camera.position.y = -10;
+
+          const scale = endScale;
+          group.scale.set(scale, scale, scale);
+
+          const startY = -60;
+          const endY = -10;
+          group.position.y = THREE.MathUtils.lerp(startY, endY, ease);
+
+          group.rotation.z = 0.35;
+          group.rotation.x = Math.atan((group.position.y - camera.position.y) / camera.position.z);
+        }
       } else {
         group.position.y = -60;
       }
@@ -329,6 +403,15 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const isMob = window.innerWidth < 768;
+      materials.forEach(mat => {
+        const nextSide = isMob ? THREE.FrontSide : THREE.DoubleSide;
+        if (mat.side !== nextSide) {
+          mat.side = nextSide;
+          mat.needsUpdate = true;
+        }
+      });
     }
 
     window.addEventListener("resize", handleResize);
@@ -339,6 +422,8 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
       window.removeEventListener("resize", handleResize);
       canvas.removeEventListener('mousemove', onMouseMove);
       canvas.removeEventListener('mouseleave', onMouseLeave);
+      canvas.removeEventListener('touchmove', onTouchMove);
+      canvas.removeEventListener('touchend', onTouchEnd);
 
       // Clean up dynamic WebGL resources
       geometries.forEach((g) => g.dispose());
@@ -351,7 +436,7 @@ export function ThreeHero({ isLoaded = true }: ThreeHeroProps) {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-full pointer-events-auto overflow-hidden z-30"
+      className="absolute inset-0 w-full h-full pointer-events-auto overflow-hidden z-20"
     >
       <canvas
         ref={canvasRef}

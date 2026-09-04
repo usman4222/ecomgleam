@@ -183,21 +183,21 @@ export function WhyChooseUs() {
       ref={containerRef}
       className="w-full min-h-screen bg-black flex items-center justify-center py-16 md:py-24 overflow-hidden"
     >
-      <div className="mx-auto max-w-[1400px] w-full px-5 md:px-10 z-20">
+      <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-6 md:px-10 z-20">
         {/* Unified White Card with NO black gap */}
         <div
           ref={cardRef}
-          className="bg-[oklch(0.96_0.005_200)] text-zinc-950 p-8 sm:p-12 md:p-20 shadow-2xl flex flex-col justify-between gap-16 md:gap-20"
+          className="bg-[oklch(0.96_0.005_200)] text-zinc-950 p-6 sm:p-10 md:p-16 lg:p-20 shadow-2xl flex flex-col justify-between gap-10 sm:gap-16 md:gap-20"
         >
           {/* Top Half: Why Choose Us split section */}
-          <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-24 items-center w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-8 sm:gap-12 lg:gap-24 items-center w-full">
             {/* Left Column (Sticky Title) */}
             <div className="flex flex-col justify-center">
               <span className="text-[0.6875rem] font-bold tracking-[0.28em] text-primary uppercase block">
                 // Why Choose Ecom Gleam
               </span>
 
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 <ScrollRevealText
                   text="Unlocking Growth Through Precision."
                   preset="Blur Reveal"
@@ -211,31 +211,31 @@ export function WhyChooseUs() {
                 />
               </div>
 
-              <p className="mt-8 max-w-sm text-base md:text-lg text-zinc-700 leading-relaxed font-sans">
+              <p className="mt-4 sm:mt-8 max-w-sm text-sm sm:text-base md:text-lg text-zinc-700 leading-relaxed font-sans">
                 We build scalable solutions aligned with process innovation and forward-thinking
                 technologies.
               </p>
             </div>
 
             {/* Right Column (Dynamic Text Cycling scroll visual) */}
-            <div className="border-l-2 border-primary/40 pl-8 py-4 flex flex-col justify-center min-h-[220px]">
+            <div className="border-l-2 border-primary/40 pl-4 sm:pl-8 py-3 sm:py-4 flex flex-col justify-center min-h-[160px] sm:min-h-[220px]">
               <span
                 ref={numRef}
-                className="font-mono text-xs text-primary tracking-[0.28em] block uppercase mb-4"
+                className="font-mono text-xs text-primary tracking-[0.28em] block uppercase mb-3 sm:mb-4"
               >
                 // 01 AI-Centered
               </span>
 
               <h3
                 ref={titleRef}
-                className="font-clash font-bold text-2xl sm:text-3xl text-zinc-950 uppercase tracking-wide"
+                className="font-clash font-bold text-xl sm:text-2xl md:text-3xl text-zinc-950 uppercase tracking-wide"
               >
                 AI-Centered
               </h3>
 
               <p
                 ref={descRef}
-                className="mt-5 text-base sm:text-lg text-zinc-700 leading-relaxed font-sans max-w-xl min-h-[80px]"
+                className="mt-3 sm:mt-5 text-sm sm:text-base md:text-lg text-zinc-700 leading-relaxed font-sans max-w-xl min-h-[60px] sm:min-h-[80px]"
               >
                 In all of our work, we think about how AI can provide more efficiency and
                 personalization. This drives how we experiment to deliver process innovation and
@@ -249,16 +249,16 @@ export function WhyChooseUs() {
 
           {/* Bottom Half: The Numbers Speak bar chart section */}
           <div ref={numbersSectionRef} className="flex flex-col w-full">
-            <span className="text-[0.6875rem] font-bold tracking-[0.28em] text-primary uppercase block mb-8">
+            <span className="text-[0.6875rem] font-bold tracking-[0.28em] text-primary uppercase block mb-6 sm:mb-8">
               // The Numbers Speak
             </span>
 
             {/* Staggered Heights Bars Layout - Base starts from bottom (items-end) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5 items-end rounded-none">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-0.5 items-end rounded-none">
               {stats.map((stat, index) => (
                 <div
                   key={index}
-                  className={`relative ${stat.heightClass} text-white flex flex-col justify-between overflow-hidden group rounded-none isolate`}
+                  className={`relative h-[120px] sm:${stat.heightClass} text-white flex flex-col justify-between overflow-hidden group rounded-none isolate`}
                 >
                   {/* Animating background bar growing from bottom to top */}
                   <motion.div

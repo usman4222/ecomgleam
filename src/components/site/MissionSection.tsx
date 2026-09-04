@@ -16,8 +16,8 @@ export function MissionSection() {
       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30 z-10" />
 
       {/* Mission Card (Flush with bottom and right on desktop) */}
-      <div className="relative z-20 bg-[oklch(0.96_0.005_200)] text-zinc-950 p-8 sm:p-12 md:p-16 w-full sm:w-[85%] md:w-[50%] lg:w-[42%]  shadow-2xl transition-all duration-300">
-        <div className="mb-6">
+      <div className="relative z-20 bg-[oklch(0.96_0.005_200)] text-zinc-950 p-6 sm:p-12 md:p-16 w-full sm:w-[85%] md:w-[50%] lg:w-[42%] shadow-2xl transition-all duration-300">
+        <div className="mb-4 sm:mb-6">
           <ScrollRevealText
             text="Our Mission"
             preset="Blur Reveal"

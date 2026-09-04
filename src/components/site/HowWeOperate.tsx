@@ -139,14 +139,14 @@ export function HowWeOperate() {
           </div>
 
           {/* Right Column - Accordion & Content */}
-          <div className="p-8 sm:p-12 md:p-16 flex flex-col justify-between relative min-h-[500px]">
+          <div className="p-5 sm:p-10 md:p-16 flex flex-col justify-between relative min-h-[420px] md:min-h-[500px]">
             
             {/* Header info */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex justify-between items-start w-full mb-12"
+              className="flex justify-between items-start w-full mb-6 sm:mb-12"
             >
               <Reveal>
                 <span className="text-[0.6875rem] font-bold tracking-[0.28em] text-primary uppercase block">

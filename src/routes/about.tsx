@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHero } from "@/components/site/PageHero";
+import { AboutHero } from "@/components/site/AboutHero";
 import { Reveal } from "@/components/site/Reveal";
+import { TeamSection } from "@/components/site/TeamSection";
 import { DiagnosticCta } from "@/components/site/CapabilityDetail";
 import { meta } from "@/components/site/CapabilityGroupPage";
 
@@ -24,13 +25,9 @@ const principles = [
 function About() {
   return (
     <>
-      <PageHero
-        eyebrow="About"
-        title="Intelligence, Commerce & Distribution Under One Model"
-        intro="Ecom Gleam works from the intelligence layer upward, then executes across commerce, media, creative, operations, channel governance and international expansion."
-      />
+      <AboutHero />
 
-      <section className="border-b border-border py-16 md:py-24">
+      <section id="ecosystem" className="border-b border-border py-16 md:py-24 bg-background">
         <div className="mx-auto grid max-w-[1400px] gap-10 px-5 md:grid-cols-2 md:px-10">
           <Reveal>
             <p className="eyebrow">The Ecosystem</p>
@@ -60,7 +57,7 @@ function About() {
         </div>
       </section>
 
-      <section className="border-b border-border py-16 md:py-24">
+      <section id="principles" className="border-b border-border py-16 md:py-24 bg-background">
         <div className="mx-auto max-w-[1400px] px-5 md:px-10">
           <Reveal>
             <p className="eyebrow">Operating Principles</p>
@@ -79,7 +76,12 @@ function About() {
         </div>
       </section>
 
+      <div id="leadership">
+        <TeamSection overlayText="LEADERSHIP" />
+      </div>
+
       <DiagnosticCta />
     </>
   );
 }
+

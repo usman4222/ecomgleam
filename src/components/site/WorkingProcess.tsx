@@ -210,9 +210,9 @@ export function WorkingProcess() {
       >
         {/* Sticky square architectural frame */}
         <div
-          className="frame sticky top-[92px] md:top-[96px] overflow-hidden bg-[#070709] select-none border border-zinc-800 shadow-2xl rounded-none"
+          className="frame sticky top-[84px] sm:top-[92px] md:top-[96px] overflow-hidden bg-[#070709] select-none border border-zinc-800 shadow-2xl rounded-none"
           style={{
-            height: "min(650px, calc(100vh - 120px))",
+            height: "min(650px, calc(100svh - 110px))",
             maxWidth: "1400px",
             margin: "0 auto",
             borderRadius: "0px",
@@ -229,7 +229,7 @@ export function WorkingProcess() {
                 zIndex: idx,
               }}
             >
-              <div className="relative h-full p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col justify-between box-border overflow-hidden">
+              <div className="relative h-full p-4 sm:p-6 md:p-10 lg:p-12 flex flex-col justify-between box-border overflow-hidden">
                 {/* Architectural Corner Crosshairs on 90-degree square corners */}
                 <span className="absolute top-2 right-2 font-mono text-xs text-zinc-600 select-none pointer-events-none">
                   +
@@ -245,23 +245,23 @@ export function WorkingProcess() {
                 </span>
 
                 {/* Two-Column Layout: Left Text & Big Step, Right Full-Height Square Image */}
-                <div className="flex flex-col lg:flex-row items-stretch justify-between gap-6 lg:gap-10 w-full h-[calc(100%-90px)] sm:h-[calc(100%-100px)] z-10 overflow-hidden">
+                <div className="flex flex-col lg:flex-row items-stretch justify-between gap-4 lg:gap-10 w-full h-[calc(100%-60px)] sm:h-[calc(100%-80px)] z-10 overflow-hidden">
                   {/* Left Column: Text Information & Bullets */}
-                  <div className="flex-1 flex flex-col justify-between overflow-hidden pr-0 lg:pr-4">
+                  <div className="flex-1 flex flex-col justify-between overflow-y-auto pr-0 lg:pr-4 no-scrollbar">
                     <div>
-                      <span className="block font-mono text-xs font-semibold tracking-[0.18em] uppercase mb-2 text-primary">
+                      <span className="block font-mono text-xs font-semibold tracking-[0.18em] uppercase mb-1 sm:mb-2 text-primary">
                         {step.eyebrow}
                       </span>
 
-                      <h3 className="font-clash font-bold text-xl sm:text-2xl lg:text-[1.85rem] uppercase tracking-wide mb-3 text-white leading-tight">
+                      <h3 className="font-clash font-bold text-lg sm:text-2xl lg:text-[1.85rem] uppercase tracking-wide mb-2 sm:mb-3 text-white leading-tight">
                         {step.title}
                       </h3>
 
-                      <p className="font-sans text-zinc-400 text-xs sm:text-sm leading-relaxed mb-4 max-w-xl">
+                      <p className="font-sans text-zinc-400 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 max-w-xl">
                         {step.description}
                       </p>
 
-                      <ul className="space-y-2 mb-4">
+                      <ul className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
                         {step.bullets.map((bullet, bIdx) => (
                           <li
                             key={bIdx}
@@ -280,7 +280,7 @@ export function WorkingProcess() {
                         <Button
                           asChild
                           size="lg"
-                          className="rounded-none bg-white text-zinc-950 hover:bg-zinc-200 font-sans font-bold text-xs uppercase tracking-wider px-8 py-6 shadow-xl"
+                          className="rounded-none bg-white text-zinc-950 hover:bg-zinc-200 font-sans font-bold text-xs uppercase tracking-wider px-6 sm:px-8 py-4 sm:py-6 shadow-xl"
                         >
                           <Link to="/contact" className="flex items-center gap-3">
                             <span>Let's Work Together</span>
@@ -292,7 +292,7 @@ export function WorkingProcess() {
                   </div>
 
                   {/* Right Column: Full-Height Square Cinematic Image */}
-                  <div className="w-full lg:w-[46%] xl:w-[48%] h-[220px] sm:h-[260px] lg:h-full flex flex-col justify-between shrink-0 relative">
+                  <div className="w-full lg:w-[46%] xl:w-[48%] h-[120px] sm:h-[180px] lg:h-full flex flex-col justify-between shrink-0 relative order-first lg:order-last">
                     <div className="relative w-full h-full overflow-hidden border border-zinc-800 bg-zinc-950 rounded-none group shadow-2xl">
                       <img
                         src={step.image}
@@ -302,11 +302,11 @@ export function WorkingProcess() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
 
                       {/* Square Image Badge Overlay */}
-                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-mono text-[0.6875rem] text-zinc-300">
-                        <span className="bg-black/85 backdrop-blur-md px-3 py-1 border border-white/15 text-white font-medium rounded-none">
+                      <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3 flex items-center justify-between font-mono text-[10px] sm:text-[0.6875rem] text-zinc-300">
+                        <span className="bg-black/85 backdrop-blur-md px-2.5 sm:px-3 py-0.5 sm:py-1 border border-white/15 text-white font-medium rounded-none">
                           {step.badge}
                         </span>
-                        <span className="text-zinc-400 bg-black/75 px-2 py-1 border border-white/10 rounded-none">
+                        <span className="text-zinc-400 bg-black/75 px-2 py-0.5 sm:py-1 border border-white/10 rounded-none">
                           {step.bottomRightIcon}
                         </span>
                       </div>
@@ -315,11 +315,11 @@ export function WorkingProcess() {
                 </div>
 
                 {/* Bottom Bar: Rotating Signature Step Label */}
-                <div className="w-full h-[70px] sm:h-[80px] flex items-end overflow-visible select-none pt-2 border-t border-zinc-800/80">
+                <div className="w-full h-[55px] sm:h-[70px] flex items-end overflow-visible select-none pt-1 sm:pt-2 border-t border-zinc-800/80">
                   <h2
                     className="year m-0 font-clash font-black tracking-tight leading-[0.75] will-change-transform text-white/90"
                     style={{
-                      fontSize: "clamp(54px, 8.5vw, 95px)",
+                      fontSize: "clamp(38px, 7.5vw, 95px)",
                       transformOrigin: "left bottom",
                     }}
                   >

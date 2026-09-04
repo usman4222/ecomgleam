@@ -168,9 +168,9 @@ export function Footer() {
       />
 
       {/* Full-width content wrapper */}
-      <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-8 md:px-10 py-16 sm:py-20 md:py-24">
+      <div className="relative z-10 mx-auto max-w-[1400px] px-4 sm:px-8 md:px-10 py-12 sm:py-16 md:py-24">
         {/* Top Content Row: Brand Info on Left, Link Columns on Right */}
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 justify-between items-start">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 justify-between items-start">
           {/* Brand Info */}
           <div className="flex flex-col items-start gap-5 max-w-sm">
             {/* Logo Link with Rotating Asterisk */}
@@ -208,7 +208,7 @@ export function Footer() {
           </div>
 
           {/* 4 Link Columns in Theme Grid */}
-          <div className="w-full lg:w-auto flex-1 grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-10 lg:gap-14 max-w-3xl">
+          <div className="w-full lg:w-auto flex-1 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 lg:gap-14 max-w-3xl">
             {columns.map((col) => (
               <div key={col.title} className="flex flex-col gap-3">
                 {/* Column Title in Theme Primary */}

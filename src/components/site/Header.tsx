@@ -75,7 +75,7 @@ export function Header() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-border bg-background lg:hidden"
+            className="overflow-hidden border-t border-border bg-background lg:hidden max-h-[calc(100svh-5rem)] overflow-y-auto"
           >
             <div className="flex flex-col px-5 py-4">
               {[...nav, { to: "/contact", label: "Contact" }].map((n) => (

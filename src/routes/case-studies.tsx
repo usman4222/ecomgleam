@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { DiagnosticCta } from "@/components/site/CapabilityDetail";
@@ -6,6 +6,10 @@ import { meta } from "@/components/site/CapabilityGroupPage";
 import { caseStudyLens, caseFilters } from "@/data/capabilities";
 
 export const Route = createFileRoute("/case-studies")({
+  beforeLoad: () => {
+    // Hide Case Studies page for now
+    throw redirect({ to: "/" });
+  },
   head: () =>
     meta(
       "Case Studies — Evidence-Led Brand Growth",

@@ -293,11 +293,11 @@ export function ServicesSection() {
                           ))}
                         </div>
 
-                        {/* See Work Button */}
+                        {/* Explore Capabilities Button */}
                         <div className="mt-6 sm:mt-8">
                           <Button asChild size="sm">
-                            <Link to="/case-studies">
-                              <span>See Work</span>
+                            <Link to="/capabilities">
+                              <span>Explore Capabilities</span>
                               <span>→</span>
                             </Link>
                           </Button>

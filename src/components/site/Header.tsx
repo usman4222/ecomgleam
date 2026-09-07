@@ -9,7 +9,7 @@ const nav = [
   { to: "/commerce-marketplaces", label: "Commerce" },
   { to: "/brand-protection", label: "Channel Control" },
   { to: "/international-expansion", label: "Expansion" },
-  { to: "/case-studies", label: "Case Studies" },
+  // { to: "/case-studies", label: "Case Studies" },
   { to: "/about", label: "About" },
 ];
 

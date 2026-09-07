@@ -144,7 +144,7 @@ export function OrbitProjects() {
             ECOM PROJECTS IN MOTION
           </h2>
           <p className="font-sans text-sm md:text-base text-muted-foreground mt-4 max-w-md">
-            Selected case studies and digital commerce solutions.
+            Selected projects and digital commerce solutions.
           </p>
         </header>
 
@@ -152,7 +152,7 @@ export function OrbitProjects() {
           {DEFAULT_ITEMS.map((item, index) => (
             <a
               key={index}
-              href="/case-studies"
+              href="/capabilities"
               className="group block relative w-full aspect-[1.48] overflow-hidden bg-zinc-900 border border-border/40 hover:border-primary/40 transition-colors"
             >
               <img
@@ -265,7 +265,7 @@ export function OrbitProjects() {
           }}
         >
           <p className="font-sans text-xs lg:text-sm font-semibold tracking-wider text-muted-foreground uppercase leading-relaxed">
-            Selected case studies and digital commerce solutions.
+            Selected projects and digital commerce solutions.
           </p>
         </div>
 
@@ -337,7 +337,7 @@ export function OrbitProjects() {
                 }}
               >
                 <a
-                  href="/case-studies"
+                  href="/capabilities"
                   className="block w-full h-full relative border border-border/40 overflow-hidden bg-zinc-950 transition-colors hover:border-primary group"
                   style={{
                     boxShadow: `0 ${18 * lerp(1, 0.4, flattenProgress)}px ${50 * lerp(1, 0.4, flattenProgress)}px rgba(0, 0, 0, 0.35)`,

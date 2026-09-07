@@ -35,7 +35,7 @@ const columns: NavColumn[] = [
   {
     title: "Firm",
     links: [
-      { to: "/case-studies", label: "Case Studies" },
+      // { to: "/case-studies", label: "Case Studies" },
       { to: "/industries", label: "Industries" },
       { to: "/insights", label: "Insights" },
       { to: "/about", label: "About / Leadership" },
